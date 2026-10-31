@@ -3,16 +3,10 @@
 int main(void)
 {
 
-    // Tableau représentant le plateau d'échec.
-    char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU] = {
-        {'t', 'c', 'f', 'd', 'r', 'f', 'c', 't'},
-        {'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'},
-        {'.', '.', '.', '.', '.', '.', '.', '.'},
-        {'.', '.', '.', '.', '.', '.', '.', '.'},
-        {'.', '.', '.', '.', '.', '.', '.', '.'},
-        {'.', '.', '.', '.', '.', '.', '.', '.'},
-        {'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'},
-        {'T', 'C', 'F', 'D', 'R', 'F', 'C', 'T'}};
+    // Crée le plateau de 64 cases (8x8).
+    char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU];
+    // Place les pièces de départ et remplit les autres cases de CASE_VIDE.
+    init_plateau(plateau);
 
     t_coup coup;
 
