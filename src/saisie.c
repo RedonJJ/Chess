@@ -44,7 +44,13 @@ int lire_coup(t_coup *coup)
         return 0;
     printf("Entrez votre coup : ");
 
-    fgets(saisie, TAILLE_SAISIE, stdin);
+    if (fgets(saisie, TAILLE_SAISIE, stdin) == NULL)
+    {
+        free(saisie);
+        printf("\nFin de la partie.\n");
+        exit(0);
+    }
+
     // Vérifie à chaque index si la saisie de l'utilisateur est correct.
     if (!colonne_valide(saisie[0]) || !ligne_valide(saisie[1]) || saisie[2] != ' ' || !colonne_valide(saisie[3]) || !ligne_valide(saisie[4]) || saisie[5] != '\n')
     {
