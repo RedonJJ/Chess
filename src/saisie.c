@@ -48,6 +48,7 @@ int lire_coup(t_coup *coup)
     // Vérifie à chaque index si la saisie de l'utilisateur est correct.
     if (!colonne_valide(saisie[0]) || !ligne_valide(saisie[1]) || saisie[2] != ' ' || !colonne_valide(saisie[3]) || !ligne_valide(saisie[4]) || saisie[5] != '\n')
     {
+        printf("Format invalide. Exemple de coup : e2 e4\n");
         free(saisie);
         return 0;
     }

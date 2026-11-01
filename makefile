@@ -2,7 +2,8 @@ NAME    = chess
 
 SRC     = src/main.c \
                src/plateau.c \
-		       src/saisie.c
+		       src/saisie.c \
+			   src/pieces.c
 
 OBJ     = $(SRC:.c=.o)
 

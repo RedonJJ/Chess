@@ -22,7 +22,7 @@ typedef struct t_coup
 void afficher_plateau(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU]);
 void init_plateau(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU]);
 int lire_coup(t_coup *coup);
-int deplacement_valide(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup coup);
+int mouvement_valide(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup coup);
 void deplacer_piece(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup coup);
 
 #endif

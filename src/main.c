@@ -10,16 +10,13 @@ int main(void)
 
     t_coup coup;
 
+    printf("Pour jouer, tapez la case de depart puis la case d'arrivee separees d'un espace (ex: e2 e4).\n");
     while (1)
     {
         afficher_plateau(plateau);
-        if (lire_coup(&coup) == 1)
+        if (lire_coup(&coup) == 1 && mouvement_valide(plateau, coup) == 1)
         {
             deplacer_piece(plateau, coup);
-        }
-        else
-        {
-            printf("Coup invalide.\n");
         }
     }
 
