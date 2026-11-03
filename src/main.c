@@ -26,6 +26,12 @@ static void afficher_erreur(t_resultat resultat)
     case ERREUR_TOUR:
         printf("La tour se deplace en ligne droite.\n");
         break;
+    case ERREUR_FOU:
+        printf("Le fou se deplace en diagonale.\n");
+        break;
+    case ERREUR_DAME:
+        printf("La dame se deplace en diagonale ou en ligne droite.\n");
+        break;
     case COUP_VALIDE:
         break;
     }

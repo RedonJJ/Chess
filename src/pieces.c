@@ -34,6 +34,22 @@ static int mouvement_tour(int distance_x, int distance_y)
     return 0;
 }
 
+// Retourne 1 si le fou se déplace en diagonale sinon 0.
+static int mouvement_fou(int distance_x, int distance_y)
+{
+    if (distance_x == distance_y)
+        return 1;
+    return 0;
+}
+
+// Retourne 1 si la dame se déplace en diagonale ou en ligne droite sinon 0.
+static int mouvement_dame(int distance_x, int distance_y)
+{
+    if (mouvement_fou(distance_x, distance_y) || mouvement_tour(distance_x, distance_y))
+        return 1;
+    return 0;
+}
+
 // Retourne 1 si n est positif, -1 si n est négatif et 0 si n est nul.
 static int signe(int n)
 {
@@ -120,6 +136,22 @@ t_resultat mouvement_valide(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup
     case 'T':
         if (!mouvement_tour(distance_x, distance_y))
             return ERREUR_TOUR;
+        // Refuse le coup si une pièce bloque le chemin.
+        if (!chemin_libre(plateau, coup))
+            return ERREUR_CHEMIN_BLOQUE;
+        break;
+    // Fou : refuse le coup s'il n'est pas en diagonale.
+    case 'F':
+        if (!mouvement_fou(distance_x, distance_y))
+            return ERREUR_FOU;
+        // Refuse le coup si une pièce bloque le chemin.
+        if (!chemin_libre(plateau, coup))
+            return ERREUR_CHEMIN_BLOQUE;
+        break;
+        // Dame : refuse le coup s'il n'est pas une diagonale ou une ligne droite.
+    case 'D':
+        if (!mouvement_dame(distance_x, distance_y))
+            return ERREUR_DAME;
         // Refuse le coup si une pièce bloque le chemin.
         if (!chemin_libre(plateau, coup))
             return ERREUR_CHEMIN_BLOQUE;
