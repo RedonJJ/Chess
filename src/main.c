@@ -1,5 +1,36 @@
 #include "echecs.h"
 
+// Affiche un message correspondant à la raison du refus du coup.
+static void afficher_erreur(t_resultat resultat)
+{
+    switch (resultat)
+    {
+    case ERREUR_CASE_VIDE:
+        printf("Il n'y a aucune piece sur cette case.\n");
+        break;
+    case ERREUR_PIECE_ADVERSE:
+        printf("Ce n'est pas ta piece.\n");
+        break;
+    case ERREUR_CHEMIN_BLOQUE:
+        printf("Une piece bloque le chemin.\n");
+        break;
+    case ERREUR_PRISE_MEME_CAMP:
+        printf("Tu ne peux pas prendre tes propres pieces.\n");
+        break;
+    case ERREUR_CAVALIER:
+        printf("Le cavalier se deplace en L.\n");
+        break;
+    case ERREUR_ROI:
+        printf("Le roi se deplace d'une seule case.\n");
+        break;
+    case ERREUR_TOUR:
+        printf("La tour se deplace en ligne droite.\n");
+        break;
+    case COUP_VALIDE:
+        break;
+    }
+}
+
 int main(void)
 {
     // Crée le plateau de 64 cases (8x8).
@@ -18,19 +49,25 @@ int main(void)
         if (joueur == BLANC)
             printf("Au tour des blancs.\n");
         else
-        {
             printf("Au tour des noirs.\n");
-        }
-
-        if (lire_coup(&coup) == 1 && mouvement_valide(plateau, coup, joueur) == 1)
+        // Lit le coup du joueur (lire_coup affiche déjà un message si le format est faux).
+        if (lire_coup(&coup) == 1)
         {
-            deplacer_piece(plateau, coup);
-            if (joueur == BLANC)
-                joueur = NOIR;
+            // Vérifie si le coup respecte les règles établies.
+            t_resultat resultat = mouvement_valide(plateau, coup, joueur);
+            if (resultat == COUP_VALIDE)
+            {
+                deplacer_piece(plateau, coup);
+                // Passe la main à l'autre joueur.
+                if (joueur == BLANC)
+                    joueur = NOIR;
+                else
+                    joueur = BLANC;
+            }
             else
-                joueur = BLANC;
+                // Explique au joueur pourquoi son coup est refusé.
+                afficher_erreur(resultat);
         }
     }
-
     return 0;
 }

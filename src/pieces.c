@@ -78,8 +78,8 @@ static int appartient_au_joueur(char piece, int joueur)
 }
 
 // Vérifie si le coup respecte les règles.
-// Retourne 1 si le coup est autorisé, sinon 0.
-int mouvement_valide(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup coup, int joueur)
+// Retourne COUP_VALIDE si le coup est autorisé, sinon retourne la raison du refus.
+t_resultat mouvement_valide(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup coup, int joueur)
 {
 
     // Nombre de cases parcourues horizontalement (x) et verticalement (y),
@@ -90,23 +90,15 @@ int mouvement_valide(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup coup, 
 
     // Refuse le coup si la case de départ est une CASE_VIDE.
     if (plateau[coup.y_start][coup.x_start] == CASE_VIDE)
-    {
-        printf("Il n'y a aucune piece sur cette case.\n");
-        return 0;
-    }
+        return ERREUR_CASE_VIDE;
 
+    // Refuse le coup si la pièce appartient à l'adversaire.
     if (!appartient_au_joueur(plateau[coup.y_start][coup.x_start], joueur))
-    {
-        printf("Ce n'est pas ta pièces.\n");
-        return 0;
-    }
+        return ERREUR_PIECE_ADVERSE;
 
     // Refuse le coup si la case d'arrivée contient une pièce du même camp.
     if (meme_couleur(plateau[coup.y_start][coup.x_start], plateau[coup.y_end][coup.x_end]))
-    {
-        printf("Tu ne peux pas prendre tes propres pieces.\n");
-        return 0;
-    }
+        return ERREUR_PRISE_MEME_CAMP;
 
     // Type de la pièce en majuscule pour traiter pièces blanches et noires de la même façon.
     char type = toupper(plateau[coup.y_start][coup.x_start]);
@@ -117,33 +109,21 @@ int mouvement_valide(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup coup, 
     // Cavalier : refuse le coup s'il ne forme pas un L.
     case 'C':
         if (!mouvement_cavalier(distance_x, distance_y))
-        {
-            printf("Le cavalier se deplace en L.\n");
-            return 0;
-        }
+            return ERREUR_CAVALIER;
         break;
     // Roi : refuse le coup s'il bouge de plus d'une case.
     case 'R':
         if (!mouvement_roi(distance_x, distance_y))
-        {
-            printf("Le roi se deplace d'une seule case.\n");
-            return 0;
-        }
+            return ERREUR_ROI;
         break;
     // Tour : refuse le coup s'il n'est pas en ligne droite.
     case 'T':
         if (!mouvement_tour(distance_x, distance_y))
-        {
-            printf("La tour se deplace en ligne droite.\n");
-            return 0;
-        }
+            return ERREUR_TOUR;
         // Refuse le coup si une pièce bloque le chemin.
         if (!chemin_libre(plateau, coup))
-        {
-            printf("Une piece bloque le chemin.\n");
-            return 0;
-        }
+            return ERREUR_CHEMIN_BLOQUE;
         break;
     }
-    return 1;
+    return COUP_VALIDE;
 }

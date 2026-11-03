@@ -21,10 +21,23 @@ typedef struct t_coup
 
 } t_coup;
 
+// COUP_VALIDE si le coup est autorisé, sinon la raison du refus.
+typedef enum
+{
+    COUP_VALIDE,
+    ERREUR_CASE_VIDE,
+    ERREUR_PIECE_ADVERSE,
+    ERREUR_PRISE_MEME_CAMP,
+    ERREUR_CAVALIER,
+    ERREUR_ROI,
+    ERREUR_TOUR,
+    ERREUR_CHEMIN_BLOQUE
+} t_resultat;
+
 void afficher_plateau(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU]);
 void init_plateau(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU]);
 int lire_coup(t_coup *coup);
-int mouvement_valide(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup coup, int joueur);
+t_resultat mouvement_valide(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup coup, int joueur);
 void deplacer_piece(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup coup);
 
 #endif
