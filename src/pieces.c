@@ -68,9 +68,18 @@ static int chemin_libre(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup cou
     return 1;
 }
 
+static int appartient_au_joueur(char piece, int joueur)
+{
+    if (joueur == BLANC && isupper(piece))
+        return 1;
+    if (joueur == NOIR && islower(piece))
+        return 1;
+    return 0;
+}
+
 // Vérifie si le coup respecte les règles.
 // Retourne 1 si le coup est autorisé, sinon 0.
-int mouvement_valide(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup coup)
+int mouvement_valide(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup coup, int joueur)
 {
 
     // Nombre de cases parcourues horizontalement (x) et verticalement (y),
@@ -83,6 +92,12 @@ int mouvement_valide(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup coup)
     if (plateau[coup.y_start][coup.x_start] == CASE_VIDE)
     {
         printf("Il n'y a aucune piece sur cette case.\n");
+        return 0;
+    }
+
+    if (!appartient_au_joueur(plateau[coup.y_start][coup.x_start], joueur))
+    {
+        printf("Ce n'est pas ta pièces.\n");
         return 0;
     }
 
