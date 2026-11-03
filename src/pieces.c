@@ -50,7 +50,7 @@ static int mouvement_dame(int distance_x, int distance_y)
     return 0;
 }
 
-static int mouvement_pion(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup coup, int joueur)
+static int mouvement_pion(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup coup, int joueur, t_case en_passant)
 {
 
     // Direction et ligne de départ selon la couleur des pions.
@@ -84,6 +84,11 @@ static int mouvement_pion(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup c
     // Condition de la prise de pièce en diagonale.
     if (distance_x == 1 && ecart_y == direction && plateau[coup.y_end][coup.x_end] != CASE_VIDE)
         return 1;
+
+    // Prise en passant, le pion va en diagonale sur la case vide que le pion adverse vient de sauter en avançant de deux cases.
+    if (distance_x == 1 && ecart_y == direction && coup.x_end == en_passant.x && coup.y_end == en_passant.y)
+        return 1;
+
     return 0;
 }
 
@@ -132,7 +137,7 @@ static int appartient_au_joueur(char piece, int joueur)
 
 // Vérifie si le coup respecte les règles.
 // Retourne COUP_VALIDE si le coup est autorisé, sinon retourne la raison du refus.
-t_resultat mouvement_valide(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup coup, int joueur)
+t_resultat mouvement_valide(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup coup, int joueur, t_case en_passant)
 {
 
     // Nombre de cases parcourues horizontalement (x) et verticalement (y),
@@ -194,7 +199,7 @@ t_resultat mouvement_valide(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup
             return ERREUR_CHEMIN_BLOQUE;
         break;
     case 'P':
-        if (!mouvement_pion(plateau, coup, joueur))
+        if (!mouvement_pion(plateau, coup, joueur, en_passant))
             return ERREUR_PION;
         break;
     }

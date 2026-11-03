@@ -51,6 +51,11 @@ int main(void)
 
     int joueur = BLANC;
 
+    t_case en_passant;
+
+    en_passant.x = -1;
+    en_passant.y = -1;
+
     printf("Pour jouer, tapez la case de depart puis la case d'arrivee separees d'un espace (ex: e2 e4).\n");
     while (1)
     {
@@ -63,7 +68,7 @@ int main(void)
         if (lire_coup(&coup) == 1)
         {
             // Vérifie si le coup respecte les règles établies.
-            t_resultat resultat = mouvement_valide(plateau, coup, joueur);
+            t_resultat resultat = mouvement_valide(plateau, coup, joueur, en_passant);
             if (resultat == COUP_VALIDE)
             {
                 deplacer_piece(plateau, coup);
