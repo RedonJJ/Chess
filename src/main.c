@@ -32,6 +32,9 @@ static void afficher_erreur(t_resultat resultat)
     case ERREUR_DAME:
         printf("La dame se deplace en diagonale ou en ligne droite.\n");
         break;
+    case ERREUR_PION:
+        printf("Le pion avance d'une case (jusqu'a deux au premier coup) et prend en diagonale.\n");
+        break;
     case COUP_VALIDE:
         break;
     }

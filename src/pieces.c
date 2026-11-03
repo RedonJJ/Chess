@@ -50,6 +50,43 @@ static int mouvement_dame(int distance_x, int distance_y)
     return 0;
 }
 
+static int mouvement_pion(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup coup, int joueur)
+{
+
+    // Direction et ligne de départ selon la couleur des pions.
+    int direction;
+    int ligne_depart;
+
+    if (joueur == BLANC)
+    {
+        ligne_depart = 6;
+        direction = -1;
+    }
+    else
+    {
+        ligne_depart = 1;
+        direction = 1;
+    }
+
+    // Distance horizontale sans signe : la prise peut se faire à gauche ou à droite.
+    int distance_x = abs(coup.x_end - coup.x_start);
+    // Écart vertical avec son signe : indique si le pion avance ou recule.
+    int ecart_y = coup.y_end - coup.y_start;
+
+    // Le pion avance d'une case tout droit si la case d'arrivée est vide.
+    if (distance_x == 0 && ecart_y == direction && plateau[coup.y_end][coup.x_end] == CASE_VIDE)
+        return 1;
+
+    // Depuis sa ligne de départ le pion peut avancer de deux cases, si la case d'arrivée et la case du milieu sont vides.
+    if (distance_x == 0 && ecart_y == direction * 2 && ligne_depart == coup.y_start && plateau[coup.y_start + direction][coup.x_start] == CASE_VIDE && plateau[coup.y_end][coup.x_end] == CASE_VIDE)
+        return 1;
+
+    // Condition de la prise de pièce en diagonale.
+    if (distance_x == 1 && ecart_y == direction && plateau[coup.y_end][coup.x_end] != CASE_VIDE)
+        return 1;
+    return 0;
+}
+
 // Retourne 1 si n est positif, -1 si n est négatif et 0 si n est nul.
 static int signe(int n)
 {
@@ -155,6 +192,10 @@ t_resultat mouvement_valide(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup
         // Refuse le coup si une pièce bloque le chemin.
         if (!chemin_libre(plateau, coup))
             return ERREUR_CHEMIN_BLOQUE;
+        break;
+    case 'P':
+        if (!mouvement_pion(plateau, coup, joueur))
+            return ERREUR_PION;
         break;
     }
     return COUP_VALIDE;

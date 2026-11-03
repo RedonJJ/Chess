@@ -33,6 +33,7 @@ typedef enum
     ERREUR_TOUR,
     ERREUR_FOU,
     ERREUR_DAME,
+    ERREUR_PION,
     ERREUR_CHEMIN_BLOQUE
 } t_resultat;
 

@@ -56,4 +56,12 @@ void deplacer_piece(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup coup)
     plateau[coup.y_end][coup.x_end] = plateau[coup.y_start][coup.x_start];
     // Vide la case de départ (ne vérifie pas les règles).
     plateau[coup.y_start][coup.x_start] = CASE_VIDE;
+
+    // Permet à un pion blanc d'être promu en dame lorsqu'il atteint la dernière ligne du plateau.
+    if (coup.y_end == 0 && plateau[coup.y_end][coup.x_end] == 'P')
+        plateau[coup.y_end][coup.x_end] = 'D';
+
+    // Permet à un pion noir d'être promu en dame lorsqu'il atteint la dernière ligne du plateau.
+    if (coup.y_end == 7 && plateau[coup.y_end][coup.x_end] == 'p')
+        plateau[coup.y_end][coup.x_end] = 'd';
 }
