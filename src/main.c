@@ -51,6 +51,7 @@ int main(void)
 
     int joueur = BLANC;
 
+    // Case sautée par un pion qui vient d'avancer de deux case (-1 si aucune).
     t_case en_passant;
 
     en_passant.x = -1;
@@ -72,6 +73,19 @@ int main(void)
             if (resultat == COUP_VALIDE)
             {
                 deplacer_piece(plateau, coup);
+
+                // Retient la case sautée si un pion vient d'avancer de deux cases sinon l'efface.
+                if (toupper(plateau[coup.y_end][coup.x_end]) == 'P' && abs(coup.y_end - coup.y_start) == 2)
+                {
+                    en_passant.x = coup.x_end;
+                    en_passant.y = (coup.y_end + coup.y_start) / 2;
+                }
+                else
+                {
+                    en_passant.x = -1;
+                    en_passant.y = -1;
+                }
+
                 // Passe la main à l'autre joueur.
                 if (joueur == BLANC)
                     joueur = NOIR;

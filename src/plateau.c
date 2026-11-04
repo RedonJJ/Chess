@@ -52,6 +52,11 @@ void afficher_plateau(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU])
 
 void deplacer_piece(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup coup)
 {
+
+    // Prise en passant : un pion qui va en diagonale sur une case vide retire le pion adverse situé à côté.
+    if (toupper(plateau[coup.y_start][coup.x_start]) == 'P' && coup.x_start != coup.x_end && plateau[coup.y_end][coup.x_end] == CASE_VIDE)
+        plateau[coup.y_start][coup.x_end] = CASE_VIDE;
+
     // Déplace la pièce de la case départ à la case arrivée.
     plateau[coup.y_end][coup.x_end] = plateau[coup.y_start][coup.x_start];
     // Vide la case de départ (ne vérifie pas les règles).

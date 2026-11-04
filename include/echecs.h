@@ -21,6 +21,7 @@ typedef struct t_coup
 
 } t_coup;
 
+// Une case du plateau x = colonne y = ligne.
 typedef struct t_case
 {
 
@@ -51,6 +52,7 @@ void afficher_plateau(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU]);
 void init_plateau(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU]);
 int lire_coup(t_coup *coup);
 t_resultat mouvement_valide(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup coup, int joueur, t_case en_passant);
+t_case trouver_roi(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], int joueur);
 void deplacer_piece(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup coup);
 
 #endif
