@@ -9,7 +9,7 @@ static int meme_couleur(char a, char b)
     return 0;
 }
 
-// Retourne 1 si le déplacement forme un L (2 cases dans un sens, 1 dans l'autre) sinon 0,
+// Retourne 1 si le déplacement forme un L (2 cases dans un sens, 1 dans l'autre), sinon 0.
 // Le cavalier saute par-dessus les pièces donc le chemin n'est pas vérifié.
 static int mouvement_cavalier(int distance_x, int distance_y)
 {
@@ -50,6 +50,8 @@ static int mouvement_dame(int distance_x, int distance_y)
     return 0;
 }
 
+// Retourne 1 si le mouvement du pion est permis (avance d'une case, double pas,
+// prise en diagonale ou prise en passant), sinon 0.
 static int mouvement_pion(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup coup, int joueur, t_case en_passant)
 {
 
@@ -73,19 +75,19 @@ static int mouvement_pion(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup c
     // Écart vertical avec son signe : indique si le pion avance ou recule.
     int ecart_y = coup.y_end - coup.y_start;
 
-    // Le pion avance d'une case tout droit si la case d'arrivée est vide.
+    // Règle 1 : le pion avance d'une case tout droit si la case d'arrivée est vide.
     if (distance_x == 0 && ecart_y == direction && plateau[coup.y_end][coup.x_end] == CASE_VIDE)
         return 1;
 
-    // Depuis sa ligne de départ le pion peut avancer de deux cases, si la case d'arrivée et la case du milieu sont vides.
+    // Règle 2 : depuis sa ligne de départ, le pion peut avancer de deux cases, si la case d'arrivée et la case du milieu sont vides.
     if (distance_x == 0 && ecart_y == direction * 2 && ligne_depart == coup.y_start && plateau[coup.y_start + direction][coup.x_start] == CASE_VIDE && plateau[coup.y_end][coup.x_end] == CASE_VIDE)
         return 1;
 
-    // Condition de la prise de pièce en diagonale.
+    // Règle 3 : le pion prend en diagonale, d'une case vers l'avant, s'il y a une pièce sur la case d'arrivée.
     if (distance_x == 1 && ecart_y == direction && plateau[coup.y_end][coup.x_end] != CASE_VIDE)
         return 1;
 
-    // Prise en passant, le pion va en diagonale sur la case vide que le pion adverse vient de sauter en avançant de deux cases.
+    // Règle 4 : prise en passant, le pion va en diagonale sur la case vide que le pion adverse vient de sauter en avançant de deux cases.
     if (distance_x == 1 && ecart_y == direction && coup.x_end == en_passant.x && coup.y_end == en_passant.y)
         return 1;
 
@@ -126,6 +128,7 @@ static int chemin_libre(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup cou
     return 1;
 }
 
+// Retourne 1 si la pièce appartient au joueur (majuscule = blancs, minuscule = noirs), sinon 0.
 static int appartient_au_joueur(char piece, int joueur)
 {
     if (joueur == BLANC && isupper(piece))
@@ -190,7 +193,7 @@ t_resultat mouvement_valide(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup
         if (!chemin_libre(plateau, coup))
             return ERREUR_CHEMIN_BLOQUE;
         break;
-        // Dame : refuse le coup s'il n'est pas une diagonale ou une ligne droite.
+    // Dame : refuse le coup s'il n'est pas une diagonale ou une ligne droite.
     case 'D':
         if (!mouvement_dame(distance_x, distance_y))
             return ERREUR_DAME;
@@ -198,6 +201,7 @@ t_resultat mouvement_valide(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup
         if (!chemin_libre(plateau, coup))
             return ERREUR_CHEMIN_BLOQUE;
         break;
+    // Pion : refuse le coup s'il ne respecte aucune de ses règles.
     case 'P':
         if (!mouvement_pion(plateau, coup, joueur, en_passant))
             return ERREUR_PION;

@@ -3,7 +3,7 @@
 // Vérifie que c'est une lettre de la colonne (A à H).
 static int colonne_valide(char c)
 {
-    // tolower accepte les majuscules (E2), il les convertis automatiquement en minuscules (e2).
+    // tolower accepte les majuscules (E2), il les convertit automatiquement en minuscules (e2).
     if (tolower(c) >= 'a' && tolower(c) <= 'h')
         return 1;
     return 0;
@@ -20,7 +20,7 @@ static int ligne_valide(char c)
 // Convertit une lettre de colonne en indice 'x' du tableau,
 // un caractère est un nombre en C ('a' = 97, 'e' = 101),
 // donc lettre - 'a' donne sa position : 'a' -> 0, 'e' -> 4, 'h' -> 7.
-// tolower permet d'accepter aussi les lettre majuscules et les changera en minuscule (E -> e).
+// tolower permet d'accepter aussi les lettres majuscules et les changera en minuscule (E -> e).
 static int colonne_vers_x(char c)
 {
     return tolower(c) - 'a';
@@ -28,7 +28,7 @@ static int colonne_vers_x(char c)
 
 // Convertit un chiffre de la ligne en indice 'y' du tableau,
 // c - '0' transforme le caractère en nombre : '2' -> 2,
-// TAILLE - nombre inverse le sens car la ligne 8 est en haut du plateau :
+// TAILLE_PLATEAU - nombre inverse le sens car la ligne 8 est en haut du plateau :
 // ligne :  8 7 6 5 4 3 2 1,
 // index : 0 1 2 3 4 5 6 7,
 // Exemples : '2' -> 8(la taille du tableau) - 2(la valeur de '2' - '0') = 6.
@@ -37,6 +37,8 @@ static int ligne_vers_y(char c)
     return TAILLE_PLATEAU - (c - '0');
 }
 
+// Lit un coup au clavier, vérifie son format et le convertit en indices du tableau.
+// Retourne 1 si la saisie est valide, sinon 0.
 int lire_coup(t_coup *coup)
 {
     char *saisie = malloc(TAILLE_SAISIE * sizeof(char));
@@ -51,7 +53,16 @@ int lire_coup(t_coup *coup)
         exit(0);
     }
 
-    // Vérifie à chaque index si la saisie de l'utilisateur est correct.
+    // Saisie trop longue (pas de '\n' lu) : on vide le reste de la ligne pour qu'il ne soit pas pris pour le coup suivant.
+    if (strchr(saisie, '\n') == NULL)
+    {
+        // getchar() lit les caractères un par un puis les jette jusqu'à la fin de la ligne, EOF(End Of File) signale qu'il n'y a plus rien à lire.
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF)
+            ;
+    }
+
+    // Vérifie à chaque index si la saisie de l'utilisateur est correcte.
     if (!colonne_valide(saisie[0]) || !ligne_valide(saisie[1]) || saisie[2] != ' ' || !colonne_valide(saisie[3]) || !ligne_valide(saisie[4]) || saisie[5] != '\n')
     {
         printf("Format invalide. Exemple de coup : e2 e4\n");

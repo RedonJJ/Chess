@@ -25,6 +25,7 @@ void init_plateau(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU])
     }
 }
 
+// Affiche le plateau avec les coordonnées (1 à 8 à gauche, A à H en bas).
 void afficher_plateau(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU])
 {
 
@@ -38,7 +39,7 @@ void afficher_plateau(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU])
         }
         printf("\n");
     }
-    // Printf permettant de facilité la lecture dans le terminal.
+    // Printf permettant de faciliter la lecture dans le terminal.
     printf("  +-----------------------\n");
     printf("    ");
     // Affiche les coordonnées de A à H dans une boucle.
@@ -50,12 +51,31 @@ void afficher_plateau(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU])
     printf("\n");
 }
 
+// Joue un coup déjà validé : déplace la pièce et gère la prise en passant,
+// le roque (déplacement de la tour) et la promotion.
 void deplacer_piece(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup coup)
 {
 
     // Prise en passant : un pion qui va en diagonale sur une case vide retire le pion adverse situé à côté.
     if (toupper(plateau[coup.y_start][coup.x_start]) == 'P' && coup.x_start != coup.x_end && plateau[coup.y_end][coup.x_end] == CASE_VIDE)
         plateau[coup.y_start][coup.x_end] = CASE_VIDE;
+
+    // Roque : si le roi se déplace de deux colonnes, la tour passe de l'autre côté du roi.
+    if (toupper(plateau[coup.y_start][coup.x_start]) == 'R' && abs(coup.x_end - coup.x_start) == 2)
+    {
+        if (coup.x_end == 6)
+        {
+            // Petit roque : la tour passe de h à f.
+            plateau[coup.y_start][5] = plateau[coup.y_start][7];
+            plateau[coup.y_start][7] = CASE_VIDE;
+        }
+        else
+        {
+            // Grand roque : la tour passe de a à d.
+            plateau[coup.y_start][3] = plateau[coup.y_start][0];
+            plateau[coup.y_start][0] = CASE_VIDE;
+        }
+    }
 
     // Déplace la pièce de la case départ à la case arrivée.
     plateau[coup.y_end][coup.x_end] = plateau[coup.y_start][coup.x_start];

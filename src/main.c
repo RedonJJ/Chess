@@ -38,6 +38,9 @@ static void afficher_erreur(t_resultat resultat)
     case ERREUR_ROI_EN_ECHEC:
         printf("Ce coup laisse ton roi en echec.\n");
         break;
+    case ERREUR_ROQUE:
+        printf("Roque impossible (roi ou tour deja deplaces, chemin occupe ou case attaquee).\n");
+        break;
     case COUP_VALIDE:
         break;
     }
@@ -50,15 +53,24 @@ int main(void)
     // Place les pièces de départ et remplit les autres cases de CASE_VIDE.
     init_plateau(plateau);
 
+    // Coup saisi par le joueur.
     t_coup coup;
 
+    // Joueur dont c'est le tour (les blancs commencent).
     int joueur = BLANC;
 
-    // Case sautée par un pion qui vient d'avancer de deux case (-1 si aucune).
+    // Case sautée par un pion qui vient d'avancer de deux cases (-1 si aucune).
     t_case en_passant;
 
     en_passant.x = -1;
     en_passant.y = -1;
+
+    // Droits de roque : tous permis au début de la partie.
+    t_roque droits;
+    droits.petit_blanc = 1;
+    droits.grand_blanc = 1;
+    droits.petit_noir = 1;
+    droits.grand_noir = 1;
 
     printf("Pour jouer, tapez la case de depart puis la case d'arrivee separees d'un espace (ex: e2 e4).\n");
     while (1)
@@ -71,14 +83,24 @@ int main(void)
         // Lit le coup du joueur (lire_coup affiche déjà un message si le format est faux).
         if (lire_coup(&coup) == 1)
         {
+
             // Vérifie si le coup respecte les règles établies.
-            t_resultat resultat = mouvement_valide(plateau, coup, joueur, en_passant);
+            // Le roque a sa propre vérification, les autres coups passent par mouvement_valide.
+            t_resultat resultat;
+            if (est_un_roque(plateau, coup))
+                resultat = verifier_roque(plateau, coup, joueur, droits);
+            else
+                resultat = mouvement_valide(plateau, coup, joueur, en_passant);
+
             // Vérifie si le coup ne laisse pas son roi en échec.
             if (resultat == COUP_VALIDE && laisse_roi_en_echec(plateau, coup, joueur) == 1)
                 resultat = ERREUR_ROI_EN_ECHEC;
             if (resultat == COUP_VALIDE)
             {
                 deplacer_piece(plateau, coup);
+
+                // Le roi ou une tour a bougé (ou une tour a été prise) : met à jour les droits de roque.
+                maj_droits_roque(&droits, coup);
 
                 // Retient la case sautée si un pion vient d'avancer de deux cases sinon l'efface.
                 if (toupper(plateau[coup.y_end][coup.x_end]) == 'P' && abs(coup.y_end - coup.y_start) == 2)
@@ -115,6 +137,7 @@ int main(void)
                         printf("Pat ! Match nul.\n");
                     return 0;
                 }
+
                 // Sinon, prévient le joueur si son roi est en échec.
                 else if (est_en_echec(plateau, joueur))
                     printf("Echec !\n");
