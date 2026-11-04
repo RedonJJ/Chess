@@ -35,6 +35,9 @@ static void afficher_erreur(t_resultat resultat)
     case ERREUR_PION:
         printf("Le pion avance d'une case (jusqu'a deux au premier coup) et prend en diagonale.\n");
         break;
+    case ERREUR_ROI_EN_ECHEC:
+        printf("Ce coup laisse ton roi en echec.\n");
+        break;
     case COUP_VALIDE:
         break;
     }
@@ -70,6 +73,9 @@ int main(void)
         {
             // Vérifie si le coup respecte les règles établies.
             t_resultat resultat = mouvement_valide(plateau, coup, joueur, en_passant);
+            // Vérifie si le coup ne laisse pas son roi en échec.
+            if (resultat == COUP_VALIDE && laisse_roi_en_echec(plateau, coup, joueur) == 1)
+                resultat = ERREUR_ROI_EN_ECHEC;
             if (resultat == COUP_VALIDE)
             {
                 deplacer_piece(plateau, coup);
@@ -91,6 +97,27 @@ int main(void)
                     joueur = NOIR;
                 else
                     joueur = BLANC;
+
+                // Fin de partie si le joueur n'a plus aucun coup autorisé.
+                if (!a_un_coup_possible(plateau, joueur, en_passant))
+                {
+                    afficher_plateau(plateau);
+                    if (est_en_echec(plateau, joueur))
+                    {
+                        printf("Echec et mat ! ");
+                        // Le gagnant est l'autre joueur.
+                        if (joueur == BLANC)
+                            printf("Les noirs gagnent.\n");
+                        else
+                            printf("Les blancs gagnent.\n");
+                    }
+                    else
+                        printf("Pat ! Match nul.\n");
+                    return 0;
+                }
+                // Sinon, prévient le joueur si son roi est en échec.
+                else if (est_en_echec(plateau, joueur))
+                    printf("Echec !\n");
             }
             else
                 // Explique au joueur pourquoi son coup est refusé.

@@ -45,7 +45,8 @@ typedef enum
     ERREUR_FOU,
     ERREUR_DAME,
     ERREUR_PION,
-    ERREUR_CHEMIN_BLOQUE
+    ERREUR_CHEMIN_BLOQUE,
+    ERREUR_ROI_EN_ECHEC
 } t_resultat;
 
 void afficher_plateau(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU]);
@@ -53,6 +54,10 @@ void init_plateau(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU]);
 int lire_coup(t_coup *coup);
 t_resultat mouvement_valide(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup coup, int joueur, t_case en_passant);
 t_case trouver_roi(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], int joueur);
+int case_attaque(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_case cible, int attaquant);
+int est_en_echec(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], int joueur);
+int laisse_roi_en_echec(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup, int joueur);
+int a_un_coup_possible(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], int joueur, t_case en_passant);
 void deplacer_piece(char plateau[TAILLE_PLATEAU][TAILLE_PLATEAU], t_coup coup);
 
 #endif
